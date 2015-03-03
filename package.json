@@ -6,5 +6,9 @@
     "type": "git",
     "url": "?.git"
   },
-  "author": "Miguel Ulloa"
+  "author": "Miguel Ulloa",
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-util": "^3.0.4"
+  }
 }
