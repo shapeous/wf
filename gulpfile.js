@@ -22,7 +22,7 @@ gulp.task("coffee", function() {
 
 gulp.task("js", function() {
 	gutil.log("- I concatenate all JavaScript files.");
-	gulp.src(jsSources)
+	gulp.src(jsSources) // The order of jsSources list controls the processing order.
 		.pipe(concat("script.js"))
 		.pipe(browserify())
 		.pipe(gulp.dest("builds/development/js"))
