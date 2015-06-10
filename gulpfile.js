@@ -13,6 +13,7 @@ var jsSources			=
 		];
 
 gulp.task("coffee", function() {
+	gutil.log("- I transpile coffee scripts into JavaScript files.");
 	gulp.src(coffeeSources)
 		.pipe(coffee({"bare": true})
 			.on("error", gutil.log))
@@ -20,6 +21,7 @@ gulp.task("coffee", function() {
 });
 
 gulp.task("js", function() {
+	gutil.log("- I concatenate all JavaScript files.");
 	gulp.src(jsSources)
 		.pipe(concat("script.js"))
 		.pipe(browserify())
