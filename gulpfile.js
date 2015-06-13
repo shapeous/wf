@@ -14,6 +14,20 @@ var jsSources			=
 		,	"components/scripts/template.js"
 		];
 var	sassSources	= ["components/sass/style.scss"];
+var htmlSources	= ["builds/development/*.html"];
+var jsonSources = ["builds/development/js/*.json"]
+
+gulp.task("html", function() {
+	gutil.log("- I handle HTML files");
+	gulp.src(htmlSources)
+		.pipe(connect.reload());
+});
+
+gulp.task("json", function() {
+	gutil.log("- I handle JSON files");
+	gulp.src(jsonSources)
+		.pipe(connect.reload());
+});
 
 gulp.task("coffee", function() {
 	gutil.log("- I transpile coffee scripts into JavaScript files.");
@@ -52,6 +66,8 @@ gulp.task("watch", function() {
 	gulp.watch(coffeeSources, ["coffee"]);
 	gulp.watch(jsSources, ["js"]);
 	gulp.watch("components/sass/*.scss", ["compass"]);
+	gulp.watch(htmlSources, ["html"])
+	gulp.watch(jsonSources, ["json"])
 });
 
 gulp.task("connect", function() {
@@ -62,6 +78,6 @@ gulp.task("connect", function() {
 		})
 });
 
-gulp.task("default", ["coffee", "js", "compass", "connect", "watch"], function() {
+gulp.task("default", ["html", "json", "coffee", "js", "compass", "connect", "watch"], function() {
 	gutil.log("- I am the default task and I run the preceding tasks in sequence");
 });
