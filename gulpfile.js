@@ -2,7 +2,8 @@ var gulp			= require("gulp")
 	,	gutil			= require("gulp-util")
 	,	coffee		= require("gulp-coffee")
 	,	browserify= require("gulp-browserify")
-	,	compass		= require("gulp-compass") 
+	,	compass		= require("gulp-compass")
+	, connect		= require("gulp-connect")
 	,	concat		= require("gulp-concat");
 
 var coffeeSources = ["components/coffee/tagline.coffee"];
@@ -28,20 +29,22 @@ gulp.task("js", function() {
 		.pipe(concat("script.js"))
 		.pipe(browserify())
 		.pipe(gulp.dest("builds/development/js"))
+		.pipe(connect.reload())
 });
 
 gulp.task("compass", function() {
 	gutil.log("- I transpile SCSS files using gulp-compass");
 	gulp.src(sassSources)
 		.pipe(compass(
-		{	"sass":	"components/sass"
-		,	"image":	"builds/development/images"
-		,	"style":	"expanded"
-		,	"comments":	true
-		})
+			{	"sass":	"components/sass"
+			,	"image":	"builds/development/images"
+			,	"style":	"expanded"
+			,	"comments":	true
+			})
 			.on("error", gutil.log)
 		)
 		.pipe(gulp.dest("builds/development/css"))
+		.pipe(connect.reload())
 });
 
 gulp.task("watch", function() {
@@ -51,6 +54,14 @@ gulp.task("watch", function() {
 	gulp.watch("components/sass/*.scss", ["compass"]);
 });
 
-gulp.task("default", ["coffee", "js", "compass", "watch"], function() {
+gulp.task("connect", function() {
+	gutil.log("- I create a server and reload when something changes");
+	connect.server(
+		{	"root":	"builds/development/"
+		,	"livereload":	true
+		})
+});
+
+gulp.task("default", ["coffee", "js", "compass", "connect", "watch"], function() {
 	gutil.log("- I am the default task and I run the preceding tasks in sequence");
 });
