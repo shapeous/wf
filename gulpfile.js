@@ -3,7 +3,9 @@ var gulp			= require("gulp")
 	,	gulpif		= require("gulp-if")
 	,	uglify		= require("gulp-uglify")
 	,	minifyHTML= require("gulp-minify-html")
-	, jsonminify= require('gulp-jsonminify')
+	, jsonminify= require("gulp-jsonminify")
+	,	imagemin	= require("gulp-imagemin")
+	, pngquant	= require("imagemin-pngquant")
 	,	coffee		= require("gulp-coffee")
 	,	browserify= require("gulp-browserify")
 	,	compass		= require("gulp-compass")
@@ -17,6 +19,7 @@ var env
 	,	sassSources
 	,	htmlSources
 	,	jsonSources
+	, imageSources
 	,	outputDir
 	,	sassStyle
 	;
@@ -40,7 +43,8 @@ jsSources			=
 		];
 sassSources	= ["components/sass/style.scss"];
 htmlSources	= ["builds/development/*.html"];
-jsonSources = ["builds/development/js/*.json"]
+jsonSources = ["builds/development/js/*.json"];
+imageSources= ["builds/development/images/**/*.*"];
 
 gulp.task("html", function() {
 	gutil.log("- I handle HTML files");
@@ -55,6 +59,18 @@ gulp.task("json", function() {
 	gulp.src(jsonSources)
 		.pipe(gulpif(env === "PRD", jsonminify()))
 		.pipe(gulpif(env === "PRD", gulp.dest(outputDir + "js/")))
+		.pipe(connect.reload());
+});
+
+gulp.task("images", function() {
+	gutil.log("- I handle all the images");
+	gulp.src(imageSources)
+		.pipe(gulpif(env === "PRD", imagemin(
+			{	"progressive":	true
+			,	"svgoPlugins":	[{ "removeViewBox": false }]
+			,	use:	[pngquant()]
+			})))
+		.pipe(gulpif(env === "PRD", gulp.dest(outputDir + "images")))
 		.pipe(connect.reload());
 });
 
@@ -99,6 +115,7 @@ gulp.task("watch", function() {
 	gulp.watch("components/sass/*.scss", ["compass"]);
 	gulp.watch(htmlSources, ["html"])
 	gulp.watch(jsonSources, ["json"])
+	gulp.watch(imageSources, ["images"])
 });
 
 gulp.task("connect", function() {
@@ -109,6 +126,6 @@ gulp.task("connect", function() {
 		})
 });
 
-gulp.task("default", ["html", "json", "coffee", "js", "compass", "connect", "watch"], function() {
+gulp.task("default", ["html", "json", "images", "coffee", "js", "compass", "connect", "watch"], function() {
 	gutil.log("- I am the default task and I run the preceding tasks in sequence");
 });
