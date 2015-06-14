@@ -2,6 +2,7 @@ var gulp			= require("gulp")
 	,	gutil			= require("gulp-util")
 	,	gulpif		= require("gulp-if")
 	,	uglify		= require("gulp-uglify")
+	,	minifyHTML= require("gulp-minify-html")
 	,	coffee		= require("gulp-coffee")
 	,	browserify= require("gulp-browserify")
 	,	compass		= require("gulp-compass")
@@ -37,12 +38,14 @@ jsSources			=
 		,	"components/scripts/template.js"
 		];
 sassSources	= ["components/sass/style.scss"];
-htmlSources	= [outputDir + "*.html"];
+htmlSources	= ["builds/development/*.html"];
 jsonSources = [outputDir + "js/*.json"]
 
 gulp.task("html", function() {
 	gutil.log("- I handle HTML files");
 	gulp.src(htmlSources)
+		.pipe(gulpif(env === "PRD", minifyHTML()))
+		.pipe(gulpif(env === "PRD", gulp.dest(outputDir)))
 		.pipe(connect.reload());
 });
 
