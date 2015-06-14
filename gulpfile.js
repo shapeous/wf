@@ -1,5 +1,7 @@
 var gulp			= require("gulp")
 	,	gutil			= require("gulp-util")
+	,	gulpif		= require("gulp-if")
+	,	uglify		= require("gulp-uglify")
 	,	coffee		= require("gulp-coffee")
 	,	browserify= require("gulp-browserify")
 	,	compass		= require("gulp-compass")
@@ -63,6 +65,7 @@ gulp.task("js", function() {
 	gulp.src(jsSources) // The order of jsSources list controls the processing order.
 		.pipe(concat("script.js"))
 		.pipe(browserify())
+		.pipe(gulpif(env === "PRD", uglify()))
 		.pipe(gulp.dest(outputDir + "js"))
 		.pipe(connect.reload())
 });
