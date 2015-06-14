@@ -3,6 +3,7 @@ var gulp			= require("gulp")
 	,	coffee		= require("gulp-coffee")
 	,	browserify= require("gulp-browserify")
 	,	compass		= require("gulp-compass")
+	,	cleanDest	= require("gulp-clean-dest")
 	, connect		= require("gulp-connect")
 	,	concat		= require("gulp-concat");
 
@@ -79,6 +80,7 @@ gulp.task("compass", function() {
 		)
 		.pipe(gulp.dest(outputDir +"css"))
 		.pipe(connect.reload())
+		.pipe(cleanDest("css"))	// Deleting "css/style.css" allows style to be changed from one run to the next
 });
 
 gulp.task("watch", function() {
